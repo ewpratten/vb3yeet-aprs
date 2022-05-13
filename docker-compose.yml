@@ -1,0 +1,42 @@
+version: "2.4"
+
+services:
+
+  # Wireguard client for automatically obtaining a public IP address pair
+  wireguard:
+    image: linuxserver/wireguard
+    container_name: wireguard
+    restart: unless-stopped
+    networks:
+      - backbone
+    volumes:
+      - ./configs/wg0.conf:/config/wg0.conf
+      - '/lib/modules:/lib/modules:ro'
+    environment:
+      - PUID=1000
+      - PGID=1000
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv6.conf.all.disable_ipv6=0
+    privileged: true
+  
+  # Web proxy
+  web_proxy:
+    image: caddy:latest
+    container_name: web_proxy
+    restart: unless-stopped
+    network_mode: service:wireguard
+    volumes:
+      - ./containers/web_proxy/Caddyfile:/etc/caddy/Caddyfile
+      - ./containters/web_proxy/caddy_data:/data
+      - caddy_config:/config
+
+networks:
+  backbone:
+    driver: bridge
+
+volumes:
+  caddy_config:
