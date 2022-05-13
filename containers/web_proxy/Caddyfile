@@ -1,3 +1,8 @@
 yeet.va3zza.com {
+
+    route /qrz {
+        redir https://qrz.com/db/VB3YEET
+    }
+
     reverse_proxy app
 }
