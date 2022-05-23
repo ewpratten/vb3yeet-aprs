@@ -46,7 +46,7 @@ pub async fn handle_message(
     log_data.insert(
         "QSO_DATE".to_string(),
         AdifType::Str(format!(
-            "{}{}{}",
+            "{:04}{:02}{:02}",
             current_time.year(),
             current_time.month(),
             current_time.day()
@@ -55,7 +55,7 @@ pub async fn handle_message(
     log_data.insert(
         "TIME_ON".to_string(),
         AdifType::Str(format!(
-            "{}{}{}",
+            "{:02}{:02}{:02}",
             current_time.hour(),
             current_time.minute(),
             current_time.second()
