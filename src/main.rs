@@ -37,6 +37,9 @@ pub async fn main() {
         log_entry_tx,
     ));
 
+    // Start the log handler
+    let log_handler_task = tokio::spawn(services::log_sync::handle_inbound_log_stream(log_entry_rx));
+
     // For now, we will just join the aprs listener task
     aprs_listener_task.await.unwrap().unwrap();
 }
