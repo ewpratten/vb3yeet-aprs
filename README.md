@@ -1,3 +1,5 @@
+<img style="margin:auto;" src="assets/vb3yeet.png">
+
 # VB3YEET Automated APRS Logger
 [![Build](https://github.com/Ewpratten/vb3yeet-aprs/actions/workflows/build.yml/badge.svg)](https://github.com/Ewpratten/vb3yeet-aprs/actions/workflows/build.yml)
 [![Clippy](https://github.com/Ewpratten/vb3yeet-aprs/actions/workflows/clippy.yml/badge.svg)](https://github.com/Ewpratten/vb3yeet-aprs/actions/workflows/clippy.yml)
