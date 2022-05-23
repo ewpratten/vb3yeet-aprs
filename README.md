@@ -1,3 +1,4 @@
+<br>
 <p align="center"><img src="assets/vb3yeet.png"></p>
 <br>
 
@@ -16,3 +17,8 @@ Between *June 25th 2022* and *August 5th 2022*, VB3YEET will be operating on the
 
 Simply send a message to the SSID `VB3YEET` with anything interesting in the message body (funny comments may find themselves published on my website). After a few seconds, you should receive a confirmation message, and sometime within the week, LOtW will be updated to contain your contact. EzPz.
 
+## Application design
+
+This thing is fairly simple. Designed to be a small binary I can drop on a random machine and forget about for a month. Rough design is as follows:
+
+![Flow Diagram](assets/diagram.png)
