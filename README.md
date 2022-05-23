@@ -21,4 +21,4 @@ Simply send a message to the SSID `VB3YEET` with anything interesting in the mes
 
 This thing is fairly simple. Designed to be a small binary I can drop on a random machine and forget about for a month. Rough design is as follows:
 
-![Flow Diagram](assets/diagram.png)
+<p align="center"><img src="assets/diagram.png"></p>
