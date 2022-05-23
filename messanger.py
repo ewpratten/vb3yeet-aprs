@@ -65,31 +65,32 @@ def main() -> int:
     # Wait for the connection to close
     while True:
         # Sleep for a while between log writes
-        try:
-            time.sleep(10)
-        except KeyboardInterrupt:
-            logger.info("Exiting")
-            break
+        pass
+        # try:
+        #     time.sleep(10)
+        # except KeyboardInterrupt:
+        #     logger.info("Exiting")
+        #     break
 
-        # Clone and clear the QSO queue
-        qso_queue_copy = qso_queue.copy()
-        qso_queue.clear()
+        # # Clone and clear the QSO queue
+        # qso_queue_copy = qso_queue.copy()
+        # qso_queue.clear()
 
-        # Inform
-        logger.info(f"Writing {len(qso_queue_copy)} QSOs to {log_file_path}")
+        # # Inform
+        # logger.info(f"Writing {len(qso_queue_copy)} QSOs to {log_file_path}")
 
-        # Load the existing log file if it exists
-        if os.path.exists(log_file_path):
-            existing_log = cabrillo.parser.parse_log_file(log_file_path)
-        else:
-            existing_log = cabrillo.Cabrillo()
-            existing_log.callsign = callsign
+        # # Load the existing log file if it exists
+        # if os.path.exists(log_file_path):
+        #     existing_log = cabrillo.parser.parse_log_file(log_file_path)
+        # else:
+        #     existing_log = cabrillo.Cabrillo()
+        #     existing_log.callsign = callsign
         
-        # Extend the qso list
-        existing_log.qso.extend(qso_queue_copy)
+        # # Extend the qso list
+        # existing_log.qso.extend(qso_queue_copy)
 
-        # Write the log to disk
-        with open(log_file_path, "w") as f:
-            existing_log.write(f)
+        # # Write the log to disk
+        # with open(log_file_path, "w") as f:
+        #     existing_log.write(f)
 
     return 0
