@@ -1,4 +1,4 @@
-<center><img src="assets/vb3yeet.png"></center>
+<p align="center"><img src="assets/vb3yeet.png"></p>
 
 # VB3YEET Automated APRS Logger
 [![Build](https://github.com/Ewpratten/vb3yeet-aprs/actions/workflows/build.yml/badge.svg)](https://github.com/Ewpratten/vb3yeet-aprs/actions/workflows/build.yml)
