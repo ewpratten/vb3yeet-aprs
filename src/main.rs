@@ -1,59 +1,49 @@
-use aprs::{AprsMessagingClient, InboundMessage};
-use config::Config;
-#[macro_use] extern crate rocket;
-
-mod aprs;
-mod config;
-mod router;
+mod services;
 
 #[tokio::main]
 pub async fn main() {
-    // Set up fern
+    // Read configuration from the environment
+    let cfg_enable_verbose_logging = std::env::var("VERBOSE_LOGGING").is_ok();
+    let cfg_callsign = std::env::var("CALLSIGN").expect("$CALLSIGN is not set");
+    let cfg_passcode = std::env::var("PASSCODE").expect("$PASSCODE is not set");
+    let cfg_logfile = std::env::var("LOGFILE").expect("$LOGFILE is not set");
+
+    // Enable logging
     fern::Dispatch::new()
-        .level(log::LevelFilter::Debug)
         .format(|out, message, record| {
             out.finish(format_args!(
                 "{}[{}][{}] {}",
-                chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
+                chrono::Local::now().format("[%Y-%m-%d %H:%M:%S]"),
                 record.target(),
                 record.level(),
                 message
             ))
         })
+        .level(if cfg_enable_verbose_logging {
+            log::LevelFilter::Debug
+        } else {
+            log::LevelFilter::Info
+        })
         .chain(std::io::stdout())
         .apply()
-        .unwrap();
+        .expect("Failed to initialize logging");
 
-    // This application is largely configured by environment variables.
-    let config_file_path =
-        std::env::var("CONFIG_FILE").unwrap_or_else(|_| "config.toml".to_string());
+    // Create the I/O channels needed for passing log entries between tasks
+    let (log_entry_tx, mut log_entry_rx) = tokio::sync::mpsc::channel(100);
 
-    // Load the configuration file
-    let config = Config::load(config_file_path).unwrap_or_else(|e| {
-        eprintln!("Failed to load config file: {}", e);
-        std::process::exit(1);
-    });
+    // Start the APRS listener
+    let aprs_listener_task = tokio::spawn(services::aprs_listener::begin_aprs_listener(
+        cfg_callsign,
+        cfg_passcode,
+        log_entry_tx,
+    ));
 
-    // Open a connection to APRS-IS
-    let mut aprs_client = AprsMessagingClient::connect(
-        &config.callsign,
-        &config.aprs_passcode,
-        handle_inbound_message,
-    )
-    .await
-    .unwrap();
+    // Start the log handler
+    let log_handler_task = tokio::spawn(services::log_sync::handle_inbound_log_stream(
+        cfg_logfile,
+        log_entry_rx,
+    ));
 
-    // Use tokio to spawn the webserver as its own task
-    tokio::spawn(async move {
-        // Start the webserver
-        let _ = rocket::build().mount("/", routes![router::route_meme]).launch().await.unwrap();
-    });
-
-    // Loop forever
-    aprs_client.run().await.unwrap();
-}
-
-fn handle_inbound_message(message: InboundMessage) -> String {
-    println!("{:?}", message);
-    "Pong!".to_string()
+    // For now, we will just join the aprs listener task
+    aprs_listener_task.await.unwrap().unwrap();
 }
